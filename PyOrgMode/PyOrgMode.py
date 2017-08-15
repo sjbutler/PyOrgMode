@@ -28,6 +28,7 @@ representation of the file allows the use of orgfiles easily in your projects.
 
 import re
 import time
+from datetime import date
 
 
 class OrgDate:
@@ -56,6 +57,17 @@ class OrgDate:
         Initialisation of an OrgDate element.
         """
         self.set_value(value)
+
+    def should_be_done(self):
+        today = date.today()
+        str_task_date = self.get_value()
+        # <2017-08-16 Wed>
+        year = int(str_task_date[1:5])
+        month = int(str_task_date[6:8])
+        day = int(str_task_date[9:11])
+        task_date = date(year, month, day)
+
+        return task_date <= today
 
     def parse_datetime(self, s):
         """
