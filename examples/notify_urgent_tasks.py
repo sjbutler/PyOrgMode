@@ -1,7 +1,7 @@
 #!/usr/bin/python2
 import sys
 import pynotify
-sys.path.append('../')
+sys.path.append('/home/dionisos/logiciels/myPyOrgMode')
 
 
 def sendmessage(title, message):
