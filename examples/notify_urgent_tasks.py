@@ -7,6 +7,8 @@ sys.path.append('/home/dionisos/logiciels/myPyOrgMode')
 def sendmessage(title, message):
     pynotify.init("Test")
     notice = pynotify.Notification(title, message)
+    notice.set_timeout(300000)
+    notice.set_urgency(pynotify.URGENCY_CRITICAL)
     notice.show()
     return
 
