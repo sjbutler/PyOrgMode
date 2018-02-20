@@ -69,6 +69,18 @@ class OrgDate:
 
         return task_date <= today
 
+    def should_be_done_today(self):
+        today = date.today()
+        str_task_date = self.get_value()
+        # <2017-08-16 Wed>
+        year = int(str_task_date[1:5])
+        month = int(str_task_date[6:8])
+        day = int(str_task_date[9:11])
+        task_date = date(year, month, day)
+
+        return task_date == today
+
+
     def parse_datetime(self, s):
         """
         Parses an org-mode date time string.

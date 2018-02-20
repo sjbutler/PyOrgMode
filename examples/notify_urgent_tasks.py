@@ -1,19 +1,21 @@
-#!/usr/bin/python2
+#!/usr/bin/python
+
+# A notification server as "notification-daemon" should be used and started
 import sys
-import pynotify
+import gi
+gi.require_version('Notify', '0.7')
+from gi.repository import Notify
 sys.path.append('/home/dionisos/logiciels/myPyOrgMode')
+from PyOrgMode import PyOrgMode
 
 
 def sendmessage(title, message):
-    pynotify.init("Test")
-    notice = pynotify.Notification(title, message)
+    Notify.init("Test")
+    notice = Notify.Notification.new(title, message)
     notice.set_timeout(300000)
-    notice.set_urgency(pynotify.URGENCY_CRITICAL)
+    notice.set_urgency(2)
     notice.show()
     return
-
-from PyOrgMode import PyOrgMode
-from datetime import date
 
 base = PyOrgMode.OrgDataStructure()
 base.load_from_file("/home/dionisos/organisation/agenda.org")
