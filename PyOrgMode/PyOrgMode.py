@@ -28,6 +28,7 @@ representation of the file allows the use of orgfiles easily in your projects.
 
 import re
 import time
+from datetime import date
 
 
 class OrgDate:
@@ -56,6 +57,29 @@ class OrgDate:
         Initialisation of an OrgDate element.
         """
         self.set_value(value)
+
+    def should_be_done(self):
+        today = date.today()
+        str_task_date = self.get_value()
+        # <2017-08-16 Wed>
+        year = int(str_task_date[1:5])
+        month = int(str_task_date[6:8])
+        day = int(str_task_date[9:11])
+        task_date = date(year, month, day)
+
+        return task_date <= today
+
+    def should_be_done_today(self):
+        today = date.today()
+        str_task_date = self.get_value()
+        # <2017-08-16 Wed>
+        year = int(str_task_date[1:5])
+        month = int(str_task_date[6:8])
+        day = int(str_task_date[9:11])
+        task_date = date(year, month, day)
+
+        return task_date == today
+
 
     def parse_datetime(self, s):
         """
@@ -316,8 +340,8 @@ class OrgElement:
 class OrgTodo():
     """Describes an individual TODO item for use in agendas and TODO lists"""
     def __init__(self, heading, todo_state,
-                 scheduled=None, deadline=None,
-                 tags=None, priority=None,
+                 scheduled, deadline,
+                 tags, priority,
                  path=[0], node=None
                  ):
         self.heading = heading
@@ -803,7 +827,6 @@ class OrgDataStructure(OrgElement):
         """Extract a list of headings with TODO states specified by the first
         argument.
         """
-
         if todo_list is None:  # Set default
             # Kludge to get around lack of self in function declarations
             todo_list = self.get_todo_states()
@@ -830,10 +853,20 @@ class OrgDataStructure(OrgElement):
                     pass
                 else:  # Handle it
                     if current_todo in todo_list:
+                        deadline = None
+                        scheduled = None
+                        for child in node.content:
+                            if hasattr(child, 'scheduled'):
+                                scheduled = child.scheduled
+                            if hasattr(child, 'deadline'):
+                                deadline = child.deadline
+
                         new_todo = OrgTodo(node.heading,
                                            node.todo,
                                            tags=node.tags,
                                            priority=node.priority,
+                                           deadline=deadline,
+                                           scheduled=scheduled,
                                            node=node)
                         results_list.append(new_todo)
                 # Now check if it has sub-headings
